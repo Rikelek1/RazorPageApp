@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using RazorPagesApp.Data;
 using RazorPagesApp.Data.Entities;
 
-namespace RazorPagesApp.Pages.Movies
+namespace RazorPagesApp.Pages.Collections
 {
     public class IndexModel(ApplicationDbContext context) : PageModel
     {
-        public IList<Movie> Movie { get;set; }  = default!;
+        public IList<Collection> Collections { get;set; }  = default!;
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
         public SelectList? Genres { get; set; }
@@ -21,16 +21,16 @@ namespace RazorPagesApp.Pages.Movies
             // Use LINQ to get list of genres.
             IQueryable<string> genreQuery = context.Movies.OrderBy(x => x.Genre).Select(x => x.Genre);
 
-            IQueryable<Movie> movies = context.Movies;
+            IQueryable<Collection> collections = context.Collections;
 
             if (!string.IsNullOrEmpty(SearchString))
-                movies = movies.Where(s => s.Title.Contains(SearchString));
+                collections = collections.Where(s => s.Name.Contains(SearchString));
 
             if (!string.IsNullOrEmpty(MovieGenre))
-                movies = movies.Where(x => x.Genre == MovieGenre);
+                collections = collections.Where(x => x.Movies.Any(y => y.Genre == MovieGenre));
             
             Genres = new SelectList(await genreQuery.Distinct().ToListAsync());
-            Movie = await movies.ToListAsync();
+            Collections = await collections.ToListAsync();
         }
     }
 }

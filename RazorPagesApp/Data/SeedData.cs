@@ -1,67 +1,56 @@
-//#define FIRST // FIRST
-#if NEVER
-#elif FIRST
-// <snippet_1>
 using Microsoft.EntityFrameworkCore;
-using RazorPagesMovie.Data;
+using RazorPagesApp.Data.Entities;
 
-namespace RazorPagesMovie.Models;
-
-public static class SeedData
+namespace RazorPagesApp.Data
 {
-    public static void Initialize(IServiceProvider serviceProvider)
+    public static class SeedData
     {
-        using (var context = new ApplicationDbContext(
-            serviceProvider.GetRequiredService<
-                DbContextOptions<ApplicationDbContext>>()))
+        public static void Initialize(IServiceProvider serviceProvider)
         {
-            if (context == null || context.Movie == null)
-            {
+            using var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
+
+            if (context == null || context.Movies == null)
                 throw new ArgumentNullException("Null ApplicationDbContext");
-            }
 
             // Look for any movies.
-            if (context.Movie.Any())
-            {
+            if (context.Movies.Any())
                 return;   // DB has been seeded
-            }
 
-            context.Movie.AddRange(
+            context.Movies.AddRange(
                 new Movie
                 {
                     Title = "When Harry Met Sally",
                     ReleaseDate = DateTime.Parse("1989-2-12"),
                     Genre = "Romantic Comedy",
-                    Price = 7.99M
+                    Price = 7.99M,
+                    Rating = "R"
                 },
-
                 new Movie
                 {
                     Title = "Ghostbusters ",
                     ReleaseDate = DateTime.Parse("1984-3-13"),
                     Genre = "Comedy",
-                    Price = 8.99M
+                    Price = 8.99M,
+                    Rating = "G"
                 },
-
                 new Movie
                 {
                     Title = "Ghostbusters 2",
                     ReleaseDate = DateTime.Parse("1986-2-23"),
                     Genre = "Comedy",
-                    Price = 9.99M
+                    Price = 9.99M,
+                    Rating = "G"
                 },
-
                 new Movie
                 {
                     Title = "Rio Bravo",
                     ReleaseDate = DateTime.Parse("1959-4-15"),
                     Genre = "Western",
-                    Price = 3.99M
+                    Price = 3.99M,
+                    Rating = "NA"
                 }
             );
             context.SaveChanges();
         }
     }
 }
-// </snippet_1>
-#endif

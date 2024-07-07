@@ -4,23 +4,23 @@ using Microsoft.EntityFrameworkCore;
 using RazorPagesApp.Data;
 using RazorPagesApp.Data.Entities;
 
-namespace RazorPagesApp.Pages.Movies
+namespace RazorPagesApp.Pages.Collections
 {
     public class DetailsModel(ApplicationDbContext context) : PageModel
     {
-        public Movie Movie { get; set; } = default!;
+        public Collection Collection { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            Movie? movie = await context.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            Collection? collection = await context.Collections.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (movie == null)
+            if (collection == null)
                 return NotFound();
             
-            Movie = movie;
+            Collection = collection;
             return Page();
         }
     }

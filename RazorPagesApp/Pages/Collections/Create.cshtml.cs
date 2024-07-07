@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPagesApp.Data;
 using RazorPagesApp.Data.Entities;
 
-namespace RazorPagesApp.Pages.Movies
+namespace RazorPagesApp.Pages.Collections
 {
     public class CreateModel(ApplicationDbContext context) : PageModel
     {
         [BindProperty]
-        public Movie Movie { get; set; } = default!;
+        public Collection Collection { get; set; } = default!;
 
         public IActionResult OnGet()
         {
@@ -21,7 +21,7 @@ namespace RazorPagesApp.Pages.Movies
           if (!ModelState.IsValid)
               return Page();
 
-          context.Movies.Add(Movie);
+          context.Collections.Add(Collection);
           await context.SaveChangesAsync();
 
           return RedirectToPage("./Index");

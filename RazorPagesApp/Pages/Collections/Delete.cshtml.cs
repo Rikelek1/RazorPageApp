@@ -3,40 +3,39 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RazorPagesApp.Data.Entities;
 
-namespace RazorPagesApp.Pages.Movies
+namespace RazorPagesApp.Pages.Collections
 {
     public class DeleteModel(Data.ApplicationDbContext context) : PageModel
     {
         [BindProperty]
-        public Movie Movie { get; set; } = default!;
+        public Collection Collection { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            Movie? movie = await context.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            Collection? collection = await context.Collections.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (movie == null)
+            if (collection == null)
                 return NotFound();
             
-            Movie = movie;
+            Collection = collection;
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || context.Movies == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
-            Movie? movie = await context.Movies.FindAsync(id);
+            
+            Collection? collection = await context.Collections.FindAsync(id);
 
-            if (movie == null)
+            if (collection == null)
                 return RedirectToPage("./Index");
             
-            Movie = movie;
-            context.Movies.Remove(Movie);
+            Collection = collection;
+            context.Collections.Remove(Collection);
 
             await context.SaveChangesAsync();
 

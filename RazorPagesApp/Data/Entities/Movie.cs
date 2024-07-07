@@ -1,15 +1,10 @@
-//#define COMBINED
-#if COMBINED
-// <snippet1>
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RazorPagesMovie.Models;
+namespace RazorPagesApp.Data.Entities;
 
-public class Movie
+public class Movie : Entity
 {
-    public int Id { get; set; }
-
     [StringLength(60, MinimumLength = 3)]
     public string Title { get; set; } = string.Empty;
 
@@ -25,6 +20,6 @@ public class Movie
 
     [RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s-]*$"), StringLength(5)]
     public string Rating { get; set; } = string.Empty;
+
+    public List<Collection> Collections { get; set; } = [];
 }
-// </snippet1>
-#endif

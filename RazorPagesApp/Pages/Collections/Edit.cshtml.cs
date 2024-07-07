@@ -4,25 +4,24 @@ using Microsoft.EntityFrameworkCore;
 using RazorPagesApp.Data;
 using RazorPagesApp.Data.Entities;
 
-namespace RazorPagesApp.Pages.Movies
+namespace RazorPagesApp.Pages.Collections
 {
     public class EditModel(ApplicationDbContext context) : PageModel
     {
         [BindProperty]
-        public Movie Movie { get; set; } = default!;
+        public Collection Collection { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
-            {
-                return NotFound();
-            }
-
-            Movie? movie =  await context.Movies.FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
                 return NotFound();
 
-            Movie = movie;
+            Collection? collection =  await context.Collections.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (collection == null)
+                return NotFound();
+
+            Collection = collection;
             return Page();
         }
 
@@ -33,7 +32,7 @@ namespace RazorPagesApp.Pages.Movies
             if (!ModelState.IsValid)
                 return Page();
 
-            context.Attach(Movie).State = EntityState.Modified;
+            context.Attach(Collection).State = EntityState.Modified;
 
             try
             {
@@ -41,7 +40,7 @@ namespace RazorPagesApp.Pages.Movies
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MovieExists(Movie.Id))
+                if (!CollectionExists(Collection.Id))
                     return NotFound();
                 
                 throw;
@@ -50,9 +49,9 @@ namespace RazorPagesApp.Pages.Movies
             return RedirectToPage("./Index");
         }
 
-        private bool MovieExists(int id)
+        private bool CollectionExists(int id)
         {
-          return context.Movies.Any(e => e.Id == id);
+          return context.Collections.Any(x => x.Id == id);
         }
     }
 }
