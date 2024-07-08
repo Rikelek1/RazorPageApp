@@ -1,56 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using RazorPagesApp.Models;
+using RazorPagesApp.Data.Entities;
 
 namespace RazorPagesApp.Pages.Movies
 {
-    public class DeleteModel : PageModel
+    public class DeleteModel(Data.ApplicationDbContext context) : PageModel
     {
-        private readonly Data.ApplicationDbContext _context;
-
-        public DeleteModel(Data.ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         [BindProperty]
       public Movie Movie { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Movie == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
-            var movie = await _context.Movie.FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await context.Movies.FirstOrDefaultAsync(m => m.Id == id);
 
             if (movie == null)
-            {
                 return NotFound();
-            }
-            else 
-            {
-                Movie = movie;
-            }
+
+            Movie = movie;
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Movie == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
-            var movie = await _context.Movie.FindAsync(id);
 
-            if (movie != null)
-            {
-                Movie = movie;
-                _context.Movie.Remove(Movie);
-                await _context.SaveChangesAsync();
-            }
+            var movie = await context.Movies.FindAsync(id);
+
+            if (movie == null)
+                return RedirectToPage("./Index");
+
+            Movie = movie;
+            context.Movies.Remove(Movie);
+            await context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

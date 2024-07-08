@@ -1,79 +1,27 @@
-//#define FIRST
-#if FIRST
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using RazorPagesMovie.Models;
-
-namespace RazorPagesMovie.Pages.Movies
-{
-    // <snippet_newProps>
-    public class IndexModel : PageModel
-    {
-        private readonly ApplicationDbContext _context;
-
-        public IndexModel(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        public IList<Movie> Movie { get;set; }  = default!;
-
-        [BindProperty(SupportsGet = true)]
-        public string? SearchString { get; set; }
-
-        public SelectList? Genres { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public string? MovieGenre { get; set; }
-
-        // </snippet_newProps>
-        public async Task OnGetAsync()
-        {
-            if (_context.Movie != null)
-            {
-                Movie = await _context.Movie.ToListAsync();
-            }
-        }
-    }
-}
-#else
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RazorPagesApp.Data;
-using RazorPagesApp.Models;
+using RazorPagesApp.Data.Entities;
 
 namespace RazorPagesApp.Pages.Movies
 {
-    public class IndexModel : PageModel
+    public class IndexModel(ApplicationDbContext context) : PageModel
     {
-        private readonly ApplicationDbContext _context;
-
-        public IndexModel(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        public IList<Movie> Movie { get;set; }  = default!;
+        public IList<Movie> Movies { get;set; }  = default!;
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
         public SelectList? Genres { get; set; }
         [BindProperty(SupportsGet = true)]
 
         public string? MovieGenre { get; set; }
-        // <snippet_SearchGenre>
+
         public async Task OnGetAsync()
         {
-            // Use LINQ to get list of genres.
-            IQueryable<string> genreQuery = from m in _context.Movie
-                                            orderby m.Genre
-                                            select m.Genre;
+            IQueryable<string> genreQuery = context.Movies.Select(x => x.Genre);
 
-            var movies = from m in _context.Movie
-                         select m;
+            IQueryable<Movie> movies = context.Movies;
 
             if (!string.IsNullOrEmpty(SearchString))
             {
@@ -85,11 +33,7 @@ namespace RazorPagesApp.Pages.Movies
                 movies = movies.Where(x => x.Genre == MovieGenre);
             }
             Genres = new SelectList(await genreQuery.Distinct().ToListAsync());
-            Movie = await movies.ToListAsync();
+            Movies = await movies.Include(x => x.User).ToListAsync();
         }
-        // </snippet_SearchGenre>
-
-
     }
 }
-#endif

@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using RazorPagesApp.Models;
+using RazorPagesApp.Data.Entities;
 
 namespace RazorPagesApp.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
 
-    public DbSet<Movie> Movie { get; set; } = default!;
+    public DbSet<Movie> Movies { get; set; } = default!;
 }

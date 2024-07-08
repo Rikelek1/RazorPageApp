@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RazorPagesApp.Data;
-using RazorPagesApp.Models;
+using RazorPagesApp.Data.Entities;
 
 namespace RazorPagesApp.Pages.Movies
 {
@@ -19,20 +19,15 @@ namespace RazorPagesApp.Pages.Movies
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Movie == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
-            var movie = await _context.Movie.FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await _context.Movies.Include(x => x.User).FirstOrDefaultAsync(m => m.Id == id);
+
             if (movie == null)
-            {
                 return NotFound();
-            }
-            else 
-            {
-                Movie = movie;
-            }
+
+            Movie = movie;
             return Page();
         }
     }

@@ -1,11 +1,7 @@
-#define Rating
-#if Rating
-#region snippet_1
-
 using Microsoft.EntityFrameworkCore;
-using RazorPagesApp.Data;
+using RazorPagesApp.Data.Entities;
 
-namespace RazorPagesApp.Models
+namespace RazorPagesApp.Data
 {
     public static class SeedData
     {
@@ -14,19 +10,18 @@ namespace RazorPagesApp.Models
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                if (context == null || context.Movie == null)
+                if (context == null || context.Movies == null)
                 {
                     throw new ArgumentNullException("Null ApplicationDbContext");
                 }
 
                 // Look for any movies.
-                if (context.Movie.Any())
+                if (context.Movies.Any())
                 {
                     return;   // DB has been seeded
                 }
 
-                #region snippet1
-                context.Movie.AddRange(
+                context.Movies.AddRange(
                     new Movie
                     {
                         Title = "When Harry Met Sally",
@@ -35,8 +30,6 @@ namespace RazorPagesApp.Models
                         Price = 7.99M,
                         Rating = "R"
                     },
-                #endregion
-
                     new Movie
                     {
                         Title = "Ghostbusters ",
@@ -45,7 +38,6 @@ namespace RazorPagesApp.Models
                         Price = 8.99M,
                         Rating = "G"
                     },
-
                     new Movie
                     {
                         Title = "Ghostbusters 2",
@@ -54,7 +46,6 @@ namespace RazorPagesApp.Models
                         Price = 9.99M,
                         Rating = "G"
                     },
-
                     new Movie
                     {
                         Title = "Rio Bravo",
@@ -69,5 +60,3 @@ namespace RazorPagesApp.Models
         }
     }
 }
-#endregion
-#endif
